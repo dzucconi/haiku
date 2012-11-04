@@ -22,8 +22,7 @@
           count = document.getElementById('count');
 
       editor.onkeyup = function () {
-        var number_of_syllables = Haiku.size(editor.value);
-        count.innerHTML = number_of_syllables;
+        count.innerHTML = Haiku.size(editor.value);
       };
     }
   };
