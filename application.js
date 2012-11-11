@@ -108,78 +108,21 @@
       return syllableCount || 0;
     },
 
-    helpers: {
-      // Pulled from underscore.js
-      each: function (obj, iterator, context) {
-        var nativeForEach = Array.prototype.forEach;
-
-        if (obj == null) return;
-        if (nativeForEach && obj.forEach === nativeForEach) {
-          obj.forEach(iterator, context);
-        } else if (obj.length === +obj.length) {
-          for (var i = 0, l = obj.length; i < l; i++) {
-            if (iterator.call(context, obj[i], i, obj) === breaker) return;
-          }
-        } else {
-          for (var key in obj) {
-            if (_.has(obj, key)) {
-              if (iterator.call(context, obj[key], key, obj) === breaker) return;
-            }
-          }
-        }
-      },
-
-      map: function (obj, iterator, context) {
-        var results = [],
-            nativeMap = Array.prototype.map;
-
-        if (obj == null) return results;
-        if (nativeMap && obj.map === nativeMap) return obj.map(iterator, context);
-        each(obj, function (value, index, list) {
-          results[results.length] = iterator.call(context, value, index, list);
-        });
-        return results;
-      },
-
-      reduce: function (obj, iterator, memo, context) {
-        var nativeReduce = Array.prototype.reduce,
-            initial = arguments.length > 2;
-
-        if (obj == null) obj = [];
-        if (nativeReduce && obj.reduce === nativeReduce) {
-          if (context) iterator = _.bind(iterator, context);
-          return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
-        }
-        each(obj, function (value, index, list) {
-          if (!initial) {
-            memo = value;
-            initial = true;
-          } else {
-            memo = iterator.call(context, memo, value, index, list);
-          }
-        });
-        if (!initial) throw new TypeError('Reduce of empty array with no initial value');
-        return memo;
-      }
-    },
-
     initialize: function () {
       var editor = document.getElementById('editor'),
           count = document.getElementById('count');
 
       editor.onkeyup = function () {
         var lines = editor.value.split('\n'),
-            sizes = Haiku.helpers.map(lines, function(line) {
-                      return Haiku.helpers.reduce(
-                        Haiku.helpers.map(line.split(' '), function(word) {
-                          return Haiku.size(word);
-                        }), function (memo, num) {
-                          return memo + num;
-                        },
-                      0);
-                    });
+            sizes = lines.map(function (line) {
+              return line.split(' ').map(function (word) {
+                return Haiku.size(word);
+              }).reduce(function (memo, num) {
+                return memo + num;
+              });
+            });
         
-        count.innerHTML = sizes.join('<br>')
+        count.innerHTML = sizes.join('<br>');
       };
     }
   };
