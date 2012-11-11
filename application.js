@@ -105,7 +105,7 @@
         if (word.match(syllable)) { syllableCount ++; }
       });
 
-      return syllableCount || 0;
+      return syllableCount || null;
     },
 
     initialize: function () {
